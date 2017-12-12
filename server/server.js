@@ -29,13 +29,35 @@ io.on('connection', (socket)=> {
     //     createAt: 545646
     // });
 
+    // Greet the user that joined
+    socket.emit('newMessage', {
+        from: "Admin",
+        text: "Welcome to the chat",
+        createdAt: new Date().getTime()
+    });
+    
+    // Sends the message to everyone except the user that created the message   
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user has joined the chat',
+        createdAt: new Date().getTime()
+    });
+
     socket.on('createMessage', (message) => {
-        // use io so it emits to all users
+        //use io so it emits to all users
         io.emit('newMessage', {
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
         });
+
+     // Sends the message to everyone except the user that created the message   
+    //  socket.broadcast.emit('newMessage', {
+    //         from: message.from,
+    //         text: message.text,
+    //         createdAt: new Date().getTime()
+    //     });
+
     });
 
     // socket.on('createEmail', (newEmail) => {
