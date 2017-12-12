@@ -20,7 +20,7 @@ var server = http.createServer(app);
 var io = socketIO(server);
 
 io.on('connection', (socket)=> {
-    console.log('New user connected');
+    //console.log('New user connected');
 
     // socket.emit('newEmail', {
     //     from: 'm@one.com',
@@ -30,11 +30,12 @@ io.on('connection', (socket)=> {
     // });
 
     socket.on('createMessage', (message) => {
-        console.log('Received message ', message);
-        var now = new Date();
-        message.createdAt=now;
-        console.log('Appended message ', message);
-        socket.emit('newMessage',{message} );
+        // use io so it emits to all users
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 
     // socket.on('createEmail', (newEmail) => {
