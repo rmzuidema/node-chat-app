@@ -22,6 +22,25 @@ var io = socketIO(server);
 io.on('connection', (socket)=> {
     console.log('New user connected');
 
+    // socket.emit('newEmail', {
+    //     from: 'm@one.com',
+    //     subject: 'Hello there',
+    //     text: 'Where heave you been?',
+    //     createAt: 545646
+    // });
+
+    socket.on('createMessage', (message) => {
+        console.log('Received message ', message);
+        var now = new Date();
+        message.createdAt=now;
+        console.log('Appended message ', message);
+        socket.emit('newMessage',{message} );
+    });
+
+    // socket.on('createEmail', (newEmail) => {
+    //     console.log('createEmail ', newEmail);
+    // });   
+    
     socket.on('disconnect', () => {
         console.log('Disconnected from client');
     });
