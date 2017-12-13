@@ -27,8 +27,26 @@ var socket = io();
             jQuery('#messages').append(li);
         });
 
+//         socket.on('newLocationMessage', function(message) {
+//             console.log('New message on server ', message);
+//  //          var url = `${message.from}: <a href=\"${message.url}\">See Map</a>`;
+//             jQuery('#location-map').attr("href", message.url);
+//         });
+
+        socket.on('newLocationMessage', function(message) {
+            console.log('New message on server ', message);
+            var li = jQuery('<li></li>');
+            var a = jQuery('<a target="_blank">Current Location</a>');
+            li.text(`${message.from}: `);
+            a.attr("href", message.url);
+            li.append(a);
+            jQuery('#messages').append(li);
+        });
+
+
+
         socket.emit('createMessage', {
-            from: 'someEmail@one.com',
+            from: 'User',
             text: 'My tests for socket.io'
         }, function(data) {
             console.log('Got from server ', data);
@@ -41,5 +59,21 @@ var socket = io();
                 text: jQuery('[name=message]').val()
             }, function(data) {
                 console.log('Got from server ', data);
+            });
+        });
+
+        var locationButton = jQuery('#send-location');
+        locationButton.on('click', function() {
+            if (!navigator.geolocation) {
+                return alert ('Not supported by browser');
+            }
+            navigator.geolocation.getCurrentPosition(function(position) {
+                console.log(position);
+                socket.emit('createGeolocationMessage', {
+                   latitude: position.coords.latitude,
+                   longitude: position.coords.longitude
+                })
+            }, function() {
+                alert('Must allow geoposition');
             });
         });
