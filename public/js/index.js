@@ -21,11 +21,24 @@ var socket = io();
         // });
 
         socket.on('newMessage', function(message) {
-            console.log('New message on server ', message);
+            // using moustache templates
             var now = moment(message.createdAt).format('h:mm a');
-            var li = jQuery('<li></li>');
-            li.text(`${message.from}: ${now} ${message.text} `);
-            jQuery('#messages').append(li);
+            var template = jQuery('#message-template').html();
+            //console.log('Template ', template);
+            var html = Mustache.render(template, {
+                text: message.text,
+                from: message.from,
+                createdAt: now
+            });
+
+            jQuery('#messages').append(html);
+
+            // Normal without moustache templates
+            // console.log('New message on server ', message);
+            // var now = moment(message.createdAt).format('h:mm a');
+            // var li = jQuery('<li></li>');
+            // li.text(`${message.from}: ${now} ${message.text} `);
+            // jQuery('#messages').append(li);
         });
 
 //         socket.on('newLocationMessage', function(message) {
@@ -35,14 +48,26 @@ var socket = io();
 //         });
 
         socket.on('newLocationMessage', function(message) {
-            console.log('New message on server ', message);
+            //console.log('New message on server ', message);
             var now = moment(message.createdAt).format('h:mm a');
-            var li = jQuery('<li></li>');
-            var a = jQuery('<a target="_blank">Current Location</a>');
-            li.text(`${message.from}: ${now} `);
-            a.attr("href", message.url);
-            li.append(a);
-            jQuery('#messages').append(li);
+            // using moustache templates
+            var template = jQuery('#location-message-template').html();
+            //console.log('Template ', template);
+            var html = Mustache.render(template, {
+                from: message.from,
+                url: message.url,
+                createdAt: now
+            });
+
+            jQuery('#messages').append(html);
+
+             // Normal without moustache templates
+            // var li = jQuery('<li></li>');
+            // var a = jQuery('<a target="_blank">Current Location</a>');
+            // li.text(`${message.from}: ${now} `);
+            // a.attr("href", message.url);
+            // li.append(a);
+            //jQuery('#messages').append(li);
         });
 
 

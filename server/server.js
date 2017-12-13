@@ -37,7 +37,7 @@ io.on('connection', (socket)=> {
     socket.broadcast.emit('newMessage', generateMessage("Admin","New user has joined the chat"));
    
     socket.on('createMessage', (message, callback) => {
-        console.log('Received msg ', message);
+        //console.log('Received msg ', message);
         callback('Ack');
         //use io so it emits to all users
         io.emit('newMessage',  generateMessage(message.from, message.text));
@@ -48,7 +48,7 @@ io.on('connection', (socket)=> {
             // trim the data
             var latitude  = `${coords.latitude}`.trim();
             var longitude = `${coords.longitude}`.trim();
-            console.log(generateLocationMessage('Admin', latitude , longitude));
+            //console.log(generateLocationMessage('Admin', latitude , longitude));
             
             io.emit('newLocationMessage', generateLocationMessage('Admin', latitude , longitude));
             // this is used in the client js to re-enable the send button
