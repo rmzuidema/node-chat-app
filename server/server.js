@@ -43,7 +43,7 @@ io.on('connection', (socket)=> {
         io.emit('newMessage',  generateMessage(message.from, message.text));
     });
 
-    socket.on('createGeolocationMessage', (coords) => {
+    socket.on('createGeolocationMessage', (coords, callback) => {
             //use io so it emits to all users
             // trim the data
             var latitude  = `${coords.latitude}`.trim();
@@ -51,10 +51,12 @@ io.on('connection', (socket)=> {
             console.log(generateLocationMessage('Admin', latitude , longitude));
             
             io.emit('newLocationMessage', generateLocationMessage('Admin', latitude , longitude));
+            // this is used in the client js to re-enable the send button
+            callback();
    });    
 
     socket.on('disconnect', () => {
-        console.log('Disconnected from client');
+        io.emit('newMessage',  generateMessage('User', '... has left the chat'));
     });
 });
 
