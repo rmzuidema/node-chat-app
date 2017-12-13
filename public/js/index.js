@@ -1,5 +1,21 @@
 var socket = io();
 
+function scrollToBottom() {
+    // selectors
+    var messages = jQuery('#messages');
+    var newMessage = messages.children('li:last-child');
+    // heights
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+    var newMessageHeight = newMessage.prop('scrollHeight');
+    var lastMessageHeight = newMessage.prev().innerHeight();
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        //console.log('Should scroll');
+        messages.scrollTop(scrollHeight);
+    }
+
+}
         socket.on('connect', function() {
             console.log('Connected to server');
 
@@ -32,6 +48,7 @@ var socket = io();
             });
 
             jQuery('#messages').append(html);
+            scrollToBottom();
 
             // Normal without moustache templates
             // console.log('New message on server ', message);
@@ -60,7 +77,7 @@ var socket = io();
             });
 
             jQuery('#messages').append(html);
-
+            scrollToBottom();
              // Normal without moustache templates
             // var li = jQuery('<li></li>');
             // var a = jQuery('<a target="_blank">Current Location</a>');
