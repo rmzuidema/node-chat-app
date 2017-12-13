@@ -3,12 +3,22 @@
 <header>
     <meta charset="utf-8"></meta>
 </header>
-<body>
-    <p>Welcome to chat</p>
+    <body>
+        <p>Welcome to chat</p>
 
+        <ol id="messages">
+  
+        </ol>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/index.js"></script>
-</body>
+        <form id="message-form">
+
+            <input name="message" placeholder="message" type="text"></input>
+            <button>Send</button>
+        </form>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/libs/jquery-3.2.1.min.js"></script>
+        <script src="/js/index.js"></script>
+    </body>
 
 </html>

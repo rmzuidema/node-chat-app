@@ -3,6 +3,7 @@ const path = require('path');
 const http = require('http');
 
 var socketIO = require('socket.io');
+var {generateMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname, '/../public');
 
@@ -30,27 +31,17 @@ io.on('connection', (socket)=> {
     // });
 
     // Greet the user that joined
-    socket.emit('newMessage', {
-        from: "Admin",
-        text: "Welcome to the chat",
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage("Admin","Welcome to the chat"));
     
     // Sends the message to everyone except the user that created the message   
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New user has joined the chat',
-        createdAt: new Date().getTime()
-    });
-
-    socket.on('createMessage', (message) => {
+    socket.broadcast.emit('newMessage', generateMessage("Admin","New user has joined the chat"));
+   
+    socket.on('createMessage', (message, callback) => {
+        console.log('Received msg ', message);
+        callback('Ack');
         //use io so it emits to all users
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
-
+        io.emit('newMessage',  generateMessage(message.from, message.text));
+    
      // Sends the message to everyone except the user that created the message   
     //  socket.broadcast.emit('newMessage', {
     //         from: message.from,

@@ -22,4 +22,24 @@ var socket = io();
 
         socket.on('newMessage', function(message) {
             console.log('New message on server ', message);
+            var li = jQuery('<li></li>');
+            li.text(`${message.from}: ${message.text}`);
+            jQuery('#messages').append(li);
+        });
+
+        socket.emit('createMessage', {
+            from: 'someEmail@one.com',
+            text: 'My tests for socket.io'
+        }, function(data) {
+            console.log('Got from server ', data);
+        });
+
+        jQuery('#message-form').on('submit', function (e) {
+            e.preventDefault();
+            socket.emit('createMessage', {
+                from: 'someEmail@one.com',
+                text: jQuery('[name=message]').val()
+            }, function(data) {
+                console.log('Got from server ', data);
+            });
         });
