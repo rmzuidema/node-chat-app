@@ -16,47 +16,52 @@ function scrollToBottom() {
     }
 
 }
-        socket.on('connect', function() {
-            console.log('Connected to server');
+socket.on('connect', function() {
+    console.log('Connected to server');
+    var params = jQuery.deparam(window.location.search);
 
-            // socket.emit('createEmail', {
-            //     to: 'someEmail@one.com',
-            //     subject: 'test email',
-            //     text: 'My tests for socket.io',
-            //     createdAt: 12768
-            // });
+    socket.emit('join', params, function(error) {
+        if (error) {
+            alert('Name and room are required');
+            window.location.href='/';
+        } else {
+            console.log('Welcome');
 
+        }
+
+    });
+
+});
+
+    socket.on('disconnect', function() {
+        console.log('Disconnected from server');
+    });
+
+    // socket.on('newEmail', function(email) {
+    //     console.log('New email on server ', email);
+    // });
+
+    socket.on('newMessage', function(message) {
+        // using moustache templates
+        var now = moment(message.createdAt).format('h:mm a');
+        var template = jQuery('#message-template').html();
+        //console.log('Template ', template);
+        var html = Mustache.render(template, {
+            text: message.text,
+            from: message.from,
+            createdAt: now
         });
 
-        socket.on('disconnect', function() {
-            console.log('Disconnected from server');
-        });
+        jQuery('#messages').append(html);
+        scrollToBottom();
 
-        // socket.on('newEmail', function(email) {
-        //     console.log('New email on server ', email);
-        // });
-
-        socket.on('newMessage', function(message) {
-            // using moustache templates
-            var now = moment(message.createdAt).format('h:mm a');
-            var template = jQuery('#message-template').html();
-            //console.log('Template ', template);
-            var html = Mustache.render(template, {
-                text: message.text,
-                from: message.from,
-                createdAt: now
-            });
-
-            jQuery('#messages').append(html);
-            scrollToBottom();
-
-            // Normal without moustache templates
-            // console.log('New message on server ', message);
-            // var now = moment(message.createdAt).format('h:mm a');
-            // var li = jQuery('<li></li>');
-            // li.text(`${message.from}: ${now} ${message.text} `);
-            // jQuery('#messages').append(li);
-        });
+        // Normal without moustache templates
+        // console.log('New message on server ', message);
+        // var now = moment(message.createdAt).format('h:mm a');
+        // var li = jQuery('<li></li>');
+        // li.text(`${message.from}: ${now} ${message.text} `);
+        // jQuery('#messages').append(li);
+    });
 
 //         socket.on('newLocationMessage', function(message) {
 //             console.log('New message on server ', message);
@@ -87,6 +92,15 @@ function scrollToBottom() {
             //jQuery('#messages').append(li);
         });
 
+
+        socket.on('UpdateUserList', function(users) {
+            console.log('Users list', users);
+            var ol = jQuery('<ol></ol>');
+            users.forEach( function(name) {
+                ol.append(jQuery('<li></li>').text(name));
+            });
+            jQuery('#users').html(ol);    
+        });
 
 
         // socket.emit('createMessage', {
