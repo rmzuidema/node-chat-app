@@ -42,6 +42,7 @@ socket.on('connect', function() {
     // });
 
     socket.on('newMessage', function(message) {
+        console.log('Message: ', message);
         // using moustache templates
         var now = moment(message.createdAt).format('h:mm a');
         var template = jQuery('#message-template').html();
@@ -114,7 +115,6 @@ socket.on('connect', function() {
             e.preventDefault();
             var messageInput = jQuery('[name=message]'); 
             socket.emit('createMessage', {
-                from: 'User',
                 text: messageInput.val()
             }, function(data) {
                 messageInput.val('');
@@ -130,7 +130,7 @@ socket.on('connect', function() {
             locationButton.text('Sending..').prop("disabled", true);
 
             navigator.geolocation.getCurrentPosition(function(position) {
-                console.log(position);
+                //console.log(position);
                
                 socket.emit('createGeolocationMessage', {
                    latitude: position.coords.latitude,

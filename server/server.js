@@ -66,8 +66,9 @@ io.on('connection', (socket)=> {
     socket.on('createMessage', (message, callback) => {
         //console.log('Received msg ', message);
         callback('Ack');
+        var user = users.getUser(socket.id);
         //use io so it emits to all users
-        io.emit('newMessage',  generateMessage(message.from, message.text));
+        io.to(user.room).emit('newMessage',  generateMessage(user.name, message.text));
     });
 
     socket.on('createGeolocationMessage', (coords, callback) => {
@@ -76,8 +77,8 @@ io.on('connection', (socket)=> {
             var latitude  = `${coords.latitude}`.trim();
             var longitude = `${coords.longitude}`.trim();
             //console.log(generateLocationMessage('Admin', latitude , longitude));
-            
-            io.emit('newLocationMessage', generateLocationMessage('Admin', latitude , longitude));
+            var user = users.getUser(socket.id);
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, latitude , longitude));
             // this is used in the client js to re-enable the send button
             callback();
    });    
